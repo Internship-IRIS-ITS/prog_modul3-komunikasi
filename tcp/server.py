@@ -11,17 +11,33 @@ server.listen()
 print(f"Server listening on {host}:{port}")
 
 # Menerima koneksi dari client
-client_socket, address = server.accept()
-print(f"Koneksi diterima dari {address}")
+# client_socket, address = server.accept()
+# print(f"Koneksi diterima dari {address}")
 
-# Menerima pesan dari client
-pesan = client_socket.recv(1024).decode("utf-8")
-print(f"Pesan dari client: {pesan}")
+# # Menerima pesan dari client
+# pesan = client_socket.recv(1024).decode("utf-8")
+# print(f"Pesan dari client: {pesan}")
 
-# Mengirim balasan ke client
-balasan = "ping"
-client_socket.send(balasan.encode("utf-8"))
+# # Mengirim balasan ke client
+# balasan = "ping"
+# client_socket.send(balasan.encode("utf-8"))
+
+while True:
+    client_socket, address = server.accept()
+    print(f"Koneksi diterima dari {address}")
+
+    # Menerima pesan dari client
+    pesan = client_socket.recv(1024).decode("utf-8")
+    print(f"Pesan dari client: {pesan}")
+
+    # Mengirim balasan ke client
+    balasan = "ping"
+    client_socket.send(balasan.encode("utf-8"))
+
+    # Menutup koneksi
+    client_socket.close()
 
 # Menutup koneksi
 client_socket.close()
 server.close()
+
