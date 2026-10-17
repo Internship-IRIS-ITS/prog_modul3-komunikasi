@@ -6,7 +6,7 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # server_host = "10.7.101.79"
 
 # Abdul
-server_host = "10.7.101.141"
+server_host = "10.7.101.138"
 
 server_port = 12345
 client.connect((server_host, server_port))

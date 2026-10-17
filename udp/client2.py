@@ -1,26 +1,34 @@
 # Client: Bob
 
 import socket
+import threading
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-bob_address = ("localhost", 12345)
-alice_address = ("localhost", 54321)
+bob_address = ("10.7.101.138", 12345)
+alice_address = ("<IP-TARGET>", 54321)
 
-sock.bind(bob_address)
+# bind ke semua interface, port sendiri
+sock.bind(("0.0.0.0", bob_address[1]))
 
 print("Bob sudah online nih!")
 
-while True:
-    msg = input("B: ")
-    sock.sendto(msg.encode(), alice_address)
 
-    sock.settimeout(0.1)
-    try:
-        data, addr = sock.recvfrom(4096)
-        print(f"Alice {addr}:", data.decode())
-    except socket.timeout:
-        pass
-    except KeyboardInterrupt:
-        print("\nBob dihentikan")
-    finally:
-        sock.close()
+def receive():
+    while True:
+        try:
+            data, addr = sock.recvfrom(4096)
+        except OSError:  # socket sudah ditutup
+            break
+        print(f"\nAlice {addr}: {data.decode()}\nBob: ", end="", flush=True)
+
+
+threading.Thread(target=receive, daemon=True).start()
+
+try:
+    while True:
+        msg = input("Bob: ")
+        sock.sendto(msg.encode(), alice_address)
+except (KeyboardInterrupt, EOFError):
+    print("\nBob dihentikan")
+finally:
+    sock.close()
